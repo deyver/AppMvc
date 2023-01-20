@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<AppFuncional.Models.Aluno>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Gestão de Alunos";
 }
 
-<h2>Index</h2>
+<h2>Gestão de Alunos</h2>
+<div>
+    <a href="@Url.Action("Create")" class="btn btn-primary">Novo Aluno</a><br /><br />
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
+<table class="table table-striped">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Nome)
@@ -47,9 +47,9 @@
             @Html.DisplayFor(modelItem => item.Ativo)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            <a href="@Url.Action("Edit", "Alunos", new { id=item.Id })" class="btn btn-warning">Editar</a>
+            <a href="@Url.Action("Details", "Alunos", new { id=item.Id })" class="btn btn-primary">Detalhes</a>
+            <a href="@Url.Action("Delete", "Alunos", new { id=item.Id })" class="btn btn-danger">Deletar</a>
         </td>
     </tr>
 }

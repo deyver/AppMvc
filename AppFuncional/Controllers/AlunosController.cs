@@ -13,22 +13,22 @@ namespace AppFuncional.Controllers
 {
     public class AlunosController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Alunos
+        [HttpGet]
+        [Route("listar-alunos")]
         public async Task<ActionResult> Index()
         {
             return View(await db.Alunos.ToListAsync());
         }
 
-        // GET: Alunos/Details/5
+        [HttpGet]
+        [Route("aluno-detalhe/{id:int}")]
         public async Task<ActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Aluno aluno = await db.Alunos.FindAsync(id);
+            var aluno = await db.Alunos.FindAsync(id);
+
             if (aluno == null)
             {
                 return HttpNotFound();
@@ -36,21 +36,21 @@ namespace AppFuncional.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Create
+        [HttpGet]
+        [Route("novo-aluno")]
         public ActionResult Create()
         {
             return View();
         }
-
-        // POST: Alunos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
+        [Route("novo-aluno")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Nome,Email,CPF,DataMatricula,Ativo")] Aluno aluno)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Nome,Email,CPF,Ativo")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {
+                aluno.DataMatricula = DateTime.Now;
                 db.Alunos.Add(aluno);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -59,13 +59,10 @@ namespace AppFuncional.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Edit/5
-        public async Task<ActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+        [HttpGet]
+        [Route("editar-aluno/{id:int}")]
+        public async Task<ActionResult> Edit(int id)
+        {            
             Aluno aluno = await db.Alunos.FindAsync(id);
             if (aluno == null)
             {
@@ -74,29 +71,25 @@ namespace AppFuncional.Controllers
             return View(aluno);
         }
 
-        // POST: Alunos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Route("editar-aluno/{id:int}")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Nome,Email,CPF,DataMatricula,Ativo")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(aluno).State = EntityState.Modified;
+                db.Entry(aluno).Property(a => a.DataMatricula).IsModified = false;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(aluno);
         }
 
-        // GET: Alunos/Delete/5
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+        [HttpGet]
+        [Route("excluir-aluno/{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {            
             Aluno aluno = await db.Alunos.FindAsync(id);
             if (aluno == null)
             {
