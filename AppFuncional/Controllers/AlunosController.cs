@@ -53,6 +53,9 @@ namespace AppFuncional.Controllers
                 aluno.DataMatricula = DateTime.Now;
                 db.Alunos.Add(aluno);
                 await db.SaveChangesAsync();
+
+                TempData["Mensagem"] = "Aluno cadastrado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -68,6 +71,9 @@ namespace AppFuncional.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewBag.Mensagem = "Não esqueça que esta ação é irreversível.";
+
             return View(aluno);
         }
 
