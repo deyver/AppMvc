@@ -11,12 +11,15 @@ using AppFuncional.Models;
 
 namespace AppFuncional.Controllers
 {
+    [Authorize]
     public class AlunosController : Controller
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Alunos
         [HttpGet]
+        [AllowAnonymous]
+        [OutputCache(Duration = 60)]
         [Route("listar-alunos")]
         public async Task<ActionResult> Index()
         {
@@ -45,6 +48,8 @@ namespace AppFuncional.Controllers
        
         [HttpPost]
         [Route("novo-aluno")]
+        [HandleError(ExceptionType =typeof(NullReferenceException), View = "Erro")]
+        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Nome,Email,CPF,Ativo")] Aluno aluno)
         {
